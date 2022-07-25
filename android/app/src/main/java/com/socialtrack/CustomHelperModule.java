@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.provider.AlarmClock;
 import java.util.Calendar;
 import com.facebook.react.bridge.Callback;
+import android.net.Uri;
 
 public class CustomHelperModule extends ReactContextBaseJavaModule {
     CustomHelperModule(ReactApplicationContext context) {
@@ -23,6 +24,7 @@ public class CustomHelperModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void createCalendarEvent(String name, String appId, String url, Callback successCallback, Callback errorCallback) {
         try {
+            //openCustomApp(appId, url);
             Calendar calendar = Calendar.getInstance();
             int hour12hrs = calendar.get(Calendar.HOUR_OF_DAY);
             int minutes = calendar.get(Calendar.MINUTE);
@@ -43,11 +45,20 @@ public class CustomHelperModule extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
-    public void openCustomApp(String packageName) {
+    public void openCustomApp(String packageName, String url) {
         try{
             Intent intent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(packageName);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getReactApplicationContext().startActivity(intent);
+            if(intent != null && packageName !=null) {
+                //Log.d("customalarmModule", "007->inside if loop" + packageName);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getReactApplicationContext().startActivity(intent);
+            } else {
+                //Log.d("customalarmModule", "007->inside else loop url--->" + url);
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(url));
+                getReactApplicationContext().startActivity(intent);
+            }
         }catch(Exception e) {
             System.out.println("Unable to open the requested app");
         }

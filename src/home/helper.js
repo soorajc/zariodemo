@@ -10,14 +10,23 @@ const openUrlViaLinking = async url => {
 
 const openAppDirectly = async (url, appId) => {
   try {
-    NativeModules.CustomHelperModule.openCustomApp(appId);
+    NativeModules.CustomHelperModule.openCustomApp(appId, url);
   } catch (error) {
+    openUrlViaLinking(url);
+  }
+};
+
+const redirectApp = (appId, url) => {
+  if (appId) {
+    openAppDirectly(url, appId);
+  } else {
     openUrlViaLinking(url);
   }
 };
 
 const handleAlarmSucess = (status, appId, url) => {
   console.log('Alarm setting success:', status);
+  setTimeout(() => redirectApp(appId, url), 3000);
 };
 
 const handleAlarmFailure = status => {
@@ -29,11 +38,6 @@ export const handleAppLaunch = async appDetails => {
   const {appName, appId, url} = appDetails;
   if (Platform.OS === 'android') {
     try {
-      if (appId) {
-        openAppDirectly(url, appId);
-      } else {
-        openUrlViaLinking(url);
-      }
       NativeModules.CustomHelperModule.createCalendarEvent(
         appName,
         appId,
