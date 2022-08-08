@@ -1,4 +1,7 @@
 import {NativeModules, Platform, Alert, Linking} from 'react-native';
+import {SCREEN_TIME_SETTINGS_MENU_LINK} from '../constants';
+
+let timeOutHandler = null;
 
 const openUrlViaLinking = async url => {
   try {
@@ -22,11 +25,12 @@ const redirectApp = (appId, url) => {
   } else {
     openUrlViaLinking(url);
   }
+  clearTimeout(timeOutHandler);
 };
 
 const handleAlarmSucess = (status, appId, url) => {
   console.log('Alarm setting success:', status);
-  setTimeout(() => redirectApp(appId, url), 3000);
+  timeOutHandler = setTimeout(() => redirectApp(appId, url), 3000);
 };
 
 const handleAlarmFailure = status => {
@@ -54,6 +58,5 @@ export const handleAppLaunch = async appDetails => {
 };
 
 export const openIOSAppUsageSummary = () => {
-  const url = 'App-Prefs:SCREEN_TIME';
-  openUrlViaLinking(url);
+  openUrlViaLinking(SCREEN_TIME_SETTINGS_MENU_LINK);
 };

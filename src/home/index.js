@@ -19,8 +19,8 @@ import {
 import styles from './styles';
 
 import standImage from '../assets/stand.jpg';
-import appConfig from './config';
-import {handleAppLaunch, openIOSAppUsageSummary} from './helper';
+import appConfig from '../config';
+import {handleAppLaunch, openIOSAppUsageSummary} from '../helper';
 
 const HomeScreen = () => {
   return (
